@@ -1,0 +1,158 @@
+create user mujtahid identified by abc123;
+create table customer(
+customer_id number primary key,
+customer_name varchar(20),
+dob varchar(20),
+parmanent_address varchar(20),
+subscription_info varchar(20)
+);
+create table address(
+customer_id number,
+division varchar(20),
+district varchar(20),
+constraint fk_address_customer foreign key(customer_id) references customer
+);
+create table subscribers(
+customer_id number,
+subscriber_level varchar(20),
+lifetime_usage number,
+constraint fk_subscribers_customer foreign key(customer_id) references customer
+);
+insert into customer values (1,'mujtahid','3-9-1996','shahjahanpur,dhaka','platinum');
+insert into customer values (2,'abir','3-10-1996','shahjahanpur,dhaka','bronze');
+insert into customer values (3,'ishrak','3-9-1997','khilgoan,dhaka','silver');
+insert into customer values (4,'rizvi','2-10-1996','borobari,gazipur','platinum');
+insert into customer values (5,'anik','4-10-1996','shahjahanpur,dhaka','silver');
+insert into customer values (6,'partho','5-7-1996','uttara,dhaka','platinum');
+insert into customer values (7,'anika','4-12-1996','shahjahanpur,gazipur','platinum');
+
+insert into address values(1,'shahjahanpur','dhaka');
+insert into address values(4,'borobari','gazipur');
+insert into address values(6,'uttara','dhaka');
+insert into address values(2,'shahjahanpur','dhaka');
+insert into address values(3,'khilgoan','dhaka');
+insert into address values(5,'shahjahanpur','dhaka');
+insert into address values(7,'shahjahanpur','gazipur');
+
+insert into subscribers values (3,'silver',10000);
+insert into subscribers values (1,'platinum',20000);
+insert into subscribers values (2,'bronze',12000);
+insert into subscribers values (4,'platinum',15000);
+insert into subscribers values (5,'silver',19000);
+insert into subscribers values (6,'platinum',18000);
+insert into subscribers values (7,'platinum',16000);
+
+1.SELECT
+    mujtahid.address.division,
+    mujtahid.address.district,
+    mujtahid.customer.dob,
+    mujtahid.customer.customer_name
+FROM
+    mujtahid.customer,
+    mujtahid.subscribers,
+    mujtahid.address
+WHERE
+    mujtahid.customer.customer_id = mujtahid.subscribers.customer_id
+    AND mujtahid.customer.customer_id = mujtahid.address.customer_id
+    AND mujtahid.subscribers.lifetime_usage > (
+        SELECT
+            2 * MAX(mujtahid.subscribers.lifetime_usage) AS max_lifetime_usage
+        FROM
+            mujtahid.subscribers
+        WHERE
+            mujtahid.subscribers.subscriber_level = 'silver'
+    )
+
+2.SELECT
+    mujtahid.customer.customer_name,
+    mujtahid.customer.customer_id,
+    mujtahid.subscribers.lifetime_usage
+FROM
+    mujtahid.customer,
+    mujtahid.subscribers
+WHERE
+    mujtahid.subscribers.customer_id = mujtahid.customer.customer_id
+    AND mujtahid.subscribers.lifetime_usage IN (
+        SELECT
+            mujtahid.subscribers.lifetime_usage
+        FROM
+            mujtahid.subscribers
+    ) and ROWNUM <= 5
+ORDER BY
+    mujtahid.subscribers.lifetime_usage DESC
+
+3.create view v1 as
+SELECT
+    mujtahid.customer.customer_name,
+    mujtahid.customer.customer_id,
+    mujtahid.subscribers.lifetime_usage
+FROM
+    mujtahid.customer,
+    mujtahid.subscribers
+WHERE
+    mujtahid.subscribers.customer_id = mujtahid.customer.customer_id
+    AND mujtahid.subscribers.lifetime_usage IN (
+        SELECT
+            mujtahid.subscribers.lifetime_usage
+        FROM
+            mujtahid.subscribers
+    ) and ROWNUM <= 5
+ORDER BY
+    mujtahid.subscribers.lifetime_usage DESC;
+    commit;
+UPDATE mujtahid.subscribers
+SET
+    subscriber_level='elite'
+WHERE EXISTS (SELECT customer_id FROM v1 where v1.customer_id=subscribers.customer_id);
+commit;
+task B:
+SELECT CONCAT('W3Schools', '.com');
+INSTR("wwerw.ibm.cerom", "er", 1, 2);//
+SELECT LOWER('SQL LOWER');
+SELECT UPPER('SQL Tutorial is FUN!');
+SELECT LENGTH('w3resource.com') "Length in characters"
+FROM DUAL;
+LPAD('tech on the net', 16, 'z');
+Result: 'ztech on the net'
+LTRIM('6372Tech', '0123456789')
+SUBSTR('TechOnTheNet', -6, 3)
+Result: 'The'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
