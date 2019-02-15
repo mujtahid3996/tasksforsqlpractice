@@ -1,0 +1,64 @@
+name:Syed Mujtahid Bin Tawhid
+Id:160041065
+Lab:B2
+CREATE TABLE MUJTAHID.OCCCUPATION 
+(
+  ID NUMBER NOT NULL 
+, GENERAL VARCHAR2(20 BYTE) 
+, SPECIFIC VARCHAR2(20 BYTE) 
+, SALARY NUMBER 
+, CONSTRAINT OCCCUPATION_PK PRIMARY KEY 
+  (
+    ID 
+  )
+);
+1.select general,specific,count(*) as total
+   from occcupation
+   group by cube(general,specific)
+   order by total;
+2. select general,min(salary),max(salary),avg(salary)
+ from occcupation
+    group by general;
+3.
+select generaloccupation
+  2  from (
+  3  select general as generaloccupation,avg(salary) as avgsalary
+  4  from occcupation
+  5  group by general)
+  6  where avgsalary >=(select avg(salary) from occcupation);
+4
+select genraral_oc,avg_salary
+ from customview
+where avg_salary>=(select max(avg_salary) from customview);
+taskB:
+CREATE TABLE GRADES (
+	ID NUMBER,
+	DEPARTMENT VARCHAR2(10),
+	PROGRAMME VARCHAR2(10),
+	COURSE VARCHAR2(10),
+	GRADE VARCHAR2(10),
+	CONSTRAINTS PK_GRADES PRIMARY KEY(ID),
+	CONSTRAINTS CHECK_DEPARTMENT CHECK (DEPARTMENT IN ('CSE', 'EEE')),
+	CONSTRAINTS CHECK_PROGRAMME CHECK (PROGRAMME IN ('BSc', 'HD')),
+	CONSTRAINTS CHECK_GRADE CHECK (GRADE IN ('A+', 'A', 'A-'))
+);
+
+INSERT INTO GRADES VALUES(1, 'CSE', 'BSc', 'CSE4544', 'A+');
+INSERT INTO GRADES VALUES(2, 'EEE', 'BSc', 'EEE4597', 'A+');
+INSERT INTO GRADES VALUES(3, 'CSE', 'HD', 'CSE4513', 'A');
+INSERT INTO GRADES VALUES(4, 'EEE', 'HD', 'EEE4512', 'A-');
+INSERT INTO GRADES VALUES(5, 'CSE', 'BSc', 'CSE4532', 'A-');
+
+
+1.
+SELECT DEPARTMENT, PROGRAMME, COURSE, GRADE, COUNT(*) AS TOTAL
+FROM GRADES
+GROUP BY ROLLUP(DEPARTMENT, PROGRAMME, COURSE, GRADE)
+ORDER BY DEPARTMENT, PROGRAMME;
+
+2.
+SELECT DEPARTMENT, PROGRAMME, COURSE, GRADE, COUNT(*) AS TOTAL
+FROM GRADES
+GROUP BY CUBE(DEPARTMENT, PROGRAMME, COURSE, GRADE)
+ORDER BY DEPARTMENT, PROGRAMME;
+
